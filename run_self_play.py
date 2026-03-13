@@ -11,6 +11,8 @@ import numpy as np
 from data.fen_conv_diff import MOVE_TO_ID, ID_TO_MOVE   
 from data.infra_2d import TransformerDecoder2D
 
+# For diffusion model
+
 action_size = 31        
 seq_len     = 77
 d_model     = 256

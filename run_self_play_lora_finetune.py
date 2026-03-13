@@ -10,6 +10,8 @@ import random
 import numpy as np
 from data.fen_conv_lora_action import MOVE_TO_ID, ID_TO_MOVE   # Updated import
 
+# For basic lora finetune, not for diffusion model
+
 action_size = 1968  # Updated to match LoRA action model      
 seq_len     = 77
 d_model     = 256
