@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import torch
 import chess
@@ -51,8 +52,9 @@ def main():
     str_indexes = [str(i) for i in indexes]
     headers = ["FEN"] + str_indexes
     
-    INPUT_FILE = "/home/ankush/repos/chess_train/HumanChess/chess_moves_with_elo.csv"
-    OUTPUT_FILE = "/home/ankush/repos/chess_train/HumanChess/relabeled_chess_moves.csv"
+    _dir = os.path.dirname(os.path.abspath(__file__))
+    INPUT_FILE = os.path.join(_dir, "chess_moves_with_elo.csv")
+    OUTPUT_FILE = os.path.join(_dir, "relabeled_chess_moves.csv")
 
     # Open files for reading and writing
     with open(INPUT_FILE, 'r') as infile, open(OUTPUT_FILE, 'w', newline='') as outfile:

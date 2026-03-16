@@ -1,3 +1,4 @@
+import os
 import sys
 sys.path.append('..')
 from model.lora_action_model import LoraActionModel  # Updated import
@@ -367,7 +368,7 @@ def train_against_baseline_online(
     torch.save(action_model.state_dict(), "action_model_selfplay_final.pth")
 
 action_model = LoraActionModel(
-    base_model_path="/home/ankush/repos/chess_train/HumanChess/DiffTune/trainer/model_epoch_7.pth",
+    base_model_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "DiffTune", "trainer", "model_epoch_7.pth"),
     elo_min=1200, 
     elo_max=1800, 
     bucket_size=100,
@@ -375,7 +376,7 @@ action_model = LoraActionModel(
     num_moves=1968
 ).to(device)
 
-checkpoint_path = "/home/ankush/repos/chess_train/HumanChess/DiffTune/trainer/human_full_model_epoch_20.pth"
+checkpoint_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "DiffTune", "trainer", "human_full_model_epoch_20.pth")
 action_model.load_state_dict(torch.load(checkpoint_path, map_location=device))
 
 

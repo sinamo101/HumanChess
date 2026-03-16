@@ -1,8 +1,9 @@
+import os
 import pandas as pd
 import numpy as np
 
 # Load the dataset
-file_path = '/Users/Ankush/Documents/Stanford/CS224R/HumanChess/noisy_fen_dataset.csv'
+file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'noisy_fen_dataset.csv')
 data = pd.read_csv(file_path)
 
 for i in range(len(data)):

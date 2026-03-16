@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -21,7 +22,8 @@ def train(max_samples: int | None = 1000):
     elo_min, elo_max, bucket_size = 1200,1800,100
     d_elo = 256
 
-    ds = load_from_disk("/home/ankush/repos/chess_train/HumanChess/DiffTune/data/data/sasa_1200_1800/")
+    _dir = os.path.dirname(os.path.abspath(__file__))
+    ds = load_from_disk(os.path.join(_dir, "..", "data", "data", "sasa_1200_1800"))
     if max_samples is not None:
         ds = ds.select(range(max_samples))
     ds.set_format(type="torch", columns=["s_tokens","f_tokens","elo_idx_float"])
@@ -37,7 +39,7 @@ def train(max_samples: int | None = 1000):
         print("Using CPU")
 
     model = LoraDiffusionModel(
-        base_model_path="/home/ankush/repos/chess_train/HumanChess/DiffTune/trainer/model_epoch_7.pth",
+        base_model_path=os.path.join(_dir, "model_epoch_7.pth"),
         elo_min=elo_min, elo_max=elo_max, bucket_size=bucket_size,
         betas=betas, num_moves=num_moves
     ).to(device)
@@ -101,7 +103,7 @@ def train(max_samples: int | None = 1000):
             if (epoch + 1) % 5 == 0:
                 state = get_peft_model_state_dict(model.lora_transformer)
                 # torch.save(state, "/home/ankush/repos/chess_train/HumanChess/DiffTune/trainer/lora_adapters.pt")
-                save_path = f"/home/ankush/repos/chess_train/HumanChess/DiffTune/trainer/model_lora_epoch_{epoch+1}.pt"
+                save_path = os.path.join(_dir, f"model_lora_epoch_{epoch+1}.pt")
                 torch.save(state, save_path)
                 torch.save(model.state_dict(), f"full_model_epoch_{epoch+1}.pth")
                 print(f"Model weights saved at {save_path}")
@@ -109,7 +111,7 @@ def train(max_samples: int | None = 1000):
         print(f"Epoch {epoch+1}/{num_epochs} — loss {loss.item():.4f}")
 
     state = get_peft_model_state_dict(model.lora_transformer)
-    torch.save(state, "/home/ankush/repos/chess_train/HumanChess/DiffTune/trainer/lora_adapters.pt")
+    torch.save(state, os.path.join(_dir, "lora_adapters.pt"))
     print("Training complete.")
 
 if __name__ == "__main__":

@@ -2,9 +2,14 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import math
+import os
 from data.infra_2d import TransformerDecoder2D
 
-def load_base_model(model_path="/home/ankush/repos/chess_train/HumanChess/DiffTune/trainer/model_epoch_7.pth"):
+_DEFAULT_MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "trainer", "model_epoch_7.pth")
+
+def load_base_model(model_path=None):
+    if model_path is None:
+        model_path = _DEFAULT_MODEL_PATH
     """
     Load the base TransformerDecoder2D model
     """

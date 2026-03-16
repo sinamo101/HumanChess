@@ -145,7 +145,7 @@ if __name__ == "__main__":
 
     # Load a previously saved model
     epoch_start = 7
-    checkpoint_path = f'/home/ankush/repos/chess_train/HumanChess/models/model_epoch_{epoch_start}.pth'
+    checkpoint_path = f'models/model_epoch_{epoch_start}.pth'
     if os.path.exists(checkpoint_path):
         model.load_state_dict(torch.load(checkpoint_path, map_location=device))
         print(f"Loaded model from {checkpoint_path}")

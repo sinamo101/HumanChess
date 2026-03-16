@@ -1,0 +1,20 @@
+# Re-export everything from fen_conv_diff (same FEN/move utilities)
+from data.fen_conv_diff import (
+    NUM_BUCKETS,
+    BUCKET_EDGES,
+    BUCKET_MIDPOINTS,
+    FULL,
+    win_to_bucket,
+    hl_gauss,
+    chars,
+    idx,
+    convert_to_token,
+    compute_all_possible_actions,
+    MOVE_TO_ID,
+    ID_TO_MOVE,
+    move_to_id,
+    id_to_move,
+    centipawns_to_win_probability,
+    get_uniform_buckets_edges_values,
+    bucketize,
+)

@@ -1,3 +1,4 @@
+import os
 import sys
 sys.path.append('..')
 from model.lora_model import LoraDiffusionModel
@@ -8,7 +9,7 @@ import torch.nn.functional as F
 from data.sv_move import return_next_move as baseline_next_move
 import random
 import numpy as np
-from data.fen_conv_diff import MOVE_TO_ID, ID_TO_MOVE   
+from data.fen_conv_diff import MOVE_TO_ID, ID_TO_MOVE
 from data.infra_2d import TransformerDecoder2D
 
 # For diffusion model
@@ -45,7 +46,9 @@ model = TransformerDecoder2D(
     use_causal_mask=False   
 ).to(device)
 
-state = torch.load("/home/ankush/repos/chess_train/HumanChess/DiffTune/trainer/model_epoch_7.pth", map_location=device)
+_dir = os.path.dirname(os.path.abspath(__file__))
+_trainer_dir = os.path.join(_dir, "DiffTune", "trainer")
+state = torch.load(os.path.join(_trainer_dir, "model_epoch_7.pth"), map_location=device)
 model.eval()
 model.load_state_dict(state)     
 
@@ -459,15 +462,15 @@ def train_against_baseline_online(
     torch.save(diffusion_model.state_dict(), "diffusion_online_final.pth")
 
 diffusion_model = LoraDiffusionModel(
-    base_model_path="/home/ankush/repos/chess_train/HumanChess/DiffTune/trainer/model_epoch_7.pth",
-    elo_min=1200, 
-    elo_max=1800, 
+    base_model_path=os.path.join(_trainer_dir, "model_epoch_7.pth"),
+    elo_min=1200,
+    elo_max=1800,
     bucket_size=100,
-    betas=[(i + 1) / (20 * 10) for i in range(20)], 
+    betas=[(i + 1) / (20 * 10) for i in range(20)],
     num_moves=2000
 ).to(device)
 
-ckpt = torch.load("/home/ankush/repos/chess_train/HumanChess/DiffTune/trainer/full_model_epoch_10.pth", map_location=device)
+ckpt = torch.load(os.path.join(_trainer_dir, "full_model_epoch_10.pth"), map_location=device)
 for k in list(ckpt.keys()):              
     if any(tag in k for tag in ["pos_enc.pe", "token_coords", "rel_idx"]):
         del ckpt[k]                       

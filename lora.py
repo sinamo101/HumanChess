@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as f
+import torch.nn.functional as F
 
 class LoRALayer(nn.Module):
     def __init__(self, layer, rank, alpha):
