@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 
 from fen_conv import convert_to_token
 from infra import TransformerDecoder
+from config import ACTION_SIZE, SEQ_LEN, D_MODEL, NUM_LAYERS, NUM_HEADS, D_FF, DROPOUT
 
 # Load and preprocess data
 df = pd.read_csv('chessbench_sample.csv')
@@ -49,15 +50,15 @@ batch_size = 64
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
-# Model hyperparameters
-action_size = 31  # possible chars for fen conv
-seq_len = 77      # Sequence length from fen_conv.py
-d_model = 256
-num_layers = 8
-num_heads = 8
-d_ff = d_model * 4
-dropout = 0.1
-output_size = 1
+# Model hyperparameters (from shared config)
+action_size = ACTION_SIZE
+seq_len = SEQ_LEN
+d_model = D_MODEL
+num_layers = NUM_LAYERS
+num_heads = NUM_HEADS
+d_ff = D_FF
+dropout = DROPOUT
+output_size = 1  # regression output for this trainer
 
 if torch.backends.mps.is_available():
     device = torch.device("mps")

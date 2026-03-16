@@ -12,7 +12,8 @@ from torch.utils.data import IterableDataset
 from fen_conv import convert_to_token, win_to_bucket, hl_gauss
 from infra import TransformerDecoder
 from infra_2d import TransformerDecoder2D
-import argparse 
+from config import ACTION_SIZE, SEQ_LEN, D_MODEL, NUM_LAYERS, NUM_HEADS, D_FF, DROPOUT, OUTPUT_SIZE, MAX_DISTANCE
+import argparse
 import os
 
 def tensorize(data_df):
@@ -94,15 +95,15 @@ if __name__ == "__main__":
     train_loader = DataLoader(train_dataset, batch_size=batch_size, num_workers=0)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, num_workers=0)
 
-    # Model hyperparameters
-    action_size = 31  
-    seq_len = 77      
-    d_model = 256
-    num_layers = 8
-    num_heads = 8
-    d_ff = d_model * 4
-    dropout = 0.1
-    output_size = 128
+    # Model hyperparameters (from shared config)
+    action_size = ACTION_SIZE
+    seq_len = SEQ_LEN
+    d_model = D_MODEL
+    num_layers = NUM_LAYERS
+    num_heads = NUM_HEADS
+    d_ff = D_FF
+    dropout = DROPOUT
+    output_size = OUTPUT_SIZE
     if torch.backends.mps.is_available():
         device = torch.device("mps")
         print("Using Apple Metal GPU")

@@ -10,16 +10,17 @@ from data.sv_move import return_next_move as baseline_next_move
 import random
 import numpy as np
 from data.fen_conv_lora_action import MOVE_TO_ID, ID_TO_MOVE   # Updated import
+from data.config import ACTION_SIZE, SEQ_LEN, D_MODEL, NUM_LAYERS, NUM_HEADS, D_FF, DROPOUT, OUTPUT_SIZE, MAX_DISTANCE
 
 # For basic lora finetune, not for diffusion model
 
-action_size = 1968  # Updated to match LoRA action model      
-seq_len     = 77
-d_model     = 256
-num_layers  = 8
-num_heads   = 8
-d_ff        = d_model * 4
-dropout     = 0.1
+action_size = 1968  # move vocab for LoRA action model (different from base ACTION_SIZE)
+seq_len     = SEQ_LEN
+d_model     = D_MODEL
+num_layers  = NUM_LAYERS
+num_heads   = NUM_HEADS
+d_ff        = D_FF
+dropout     = DROPOUT
 
 if torch.backends.mps.is_available():
     device = torch.device("mps")

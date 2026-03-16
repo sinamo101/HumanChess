@@ -2,6 +2,9 @@ import torch
 import torch.nn as nn
 from peft import LoraConfig, get_peft_model
 from model.infra_2d_diff import TransformerDecoder2D
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from data.config import ACTION_SIZE, SEQ_LEN, D_MODEL, NUM_LAYERS, NUM_HEADS, D_FF, DROPOUT, MAX_DISTANCE
 
 
 class LoraActionModel(nn.Module):
@@ -12,22 +15,22 @@ class LoraActionModel(nn.Module):
     def __init__(self, base_model_path, elo_min, elo_max, bucket_size, betas, num_moves):
         super().__init__()
 
-        self.piece_vocab = 31
+        self.piece_vocab = ACTION_SIZE
         self.num_moves = num_moves
         self.transformer = TransformerDecoder2D(
-            num_layers=8,
-            d_model=256,
-            num_heads=8,
-            d_ff=1024,
-            dropout=0.1,
-            action_size=31,
-            seq_len=77,
-            max_distance=8,
+            num_layers=NUM_LAYERS,
+            d_model=D_MODEL,
+            num_heads=NUM_HEADS,
+            d_ff=D_FF,
+            dropout=DROPOUT,
+            action_size=ACTION_SIZE,
+            seq_len=SEQ_LEN,
+            max_distance=MAX_DISTANCE,
             use_causal_mask=False,
             output_size=num_moves,
         )
 
-        self.d_model = 256
+        self.d_model = D_MODEL
 
         pretrained_model = torch.load(base_model_path, map_location="cpu")
 

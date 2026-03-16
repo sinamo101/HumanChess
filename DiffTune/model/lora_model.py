@@ -4,26 +4,29 @@ from peft import LoraConfig, get_peft_model
 from transformers import AutoModel
 import math
 from model.infra_2d_diff import TransformerDecoder2D
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+from data.config import ACTION_SIZE, SEQ_LEN, D_MODEL, NUM_LAYERS, NUM_HEADS, D_FF, DROPOUT, MAX_DISTANCE
 
 class LoraDiffusionModel(nn.Module):
     def __init__(self, base_model_path, elo_min, elo_max, bucket_size, betas, num_moves):
         super().__init__()
 
-        self.piece_vocab = 31
+        self.piece_vocab = ACTION_SIZE
         self.transformer = TransformerDecoder2D(
-            num_layers=8,
-            d_model=256,
-            num_heads=8,
-            d_ff=1024,
-            dropout=0.1,
-            action_size=2000,
-            seq_len=77,
-            max_distance=8,
+            num_layers=NUM_LAYERS,
+            d_model=D_MODEL,
+            num_heads=NUM_HEADS,
+            d_ff=D_FF,
+            dropout=DROPOUT,
+            action_size=num_moves,
+            seq_len=SEQ_LEN,
+            max_distance=MAX_DISTANCE,
             use_causal_mask=False,
-            output_size=2000,
+            output_size=num_moves,
         )
 
-        self.d_model = 256
+        self.d_model = D_MODEL
         # self.embed_peices = nn.Embedding(self.piece_vocab, self.d_model)
         # self.embed_moves = nn.Embedding(num_moves, self.d_model)
         self.t_embed = nn.Embedding(21, self.d_model)
@@ -42,7 +45,7 @@ class LoraDiffusionModel(nn.Module):
 
         old_embed = pretrained_model["input_emb.weight"]
         old_action, dim = old_embed.shape
-        new_embed = torch.empty(2000, dim)
+        new_embed = torch.empty(num_moves, dim)
         new_embed[:old_action] = old_embed
         nn.init.normal_(new_embed[old_action:], std=0.01)
         self.transformer.input_emb = nn.Embedding.from_pretrained(new_embed, freeze=False)
@@ -69,7 +72,7 @@ class LoraDiffusionModel(nn.Module):
         self.bucket_size = bucket_size
         self.num_buckets = (elo_max-elo_min)//bucket_size + 1
         self.elo_buckets = nn.Embedding(self.num_buckets, self.d_model)
-        self.move_head  = nn.Linear(self.d_model, 2000)
+        self.move_head  = nn.Linear(self.d_model, num_moves)
         nn.init.normal_(self.transformer.input_emb.weight, std=0.02)
         nn.init.zeros_(self.move_head.bias)
 

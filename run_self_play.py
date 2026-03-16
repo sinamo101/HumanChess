@@ -11,17 +11,18 @@ import random
 import numpy as np
 from data.fen_conv_diff import MOVE_TO_ID, ID_TO_MOVE
 from data.infra_2d import TransformerDecoder2D
+from data.config import ACTION_SIZE, SEQ_LEN, D_MODEL, NUM_LAYERS, NUM_HEADS, D_FF, DROPOUT, OUTPUT_SIZE, MAX_DISTANCE
 
 # For diffusion model
 
-action_size = 31        
-seq_len     = 77
-d_model     = 256
-num_layers  = 8
-num_heads   = 8
-d_ff        = d_model * 4
-dropout     = 0.1
-output_size = 128  
+action_size = ACTION_SIZE
+seq_len     = SEQ_LEN
+d_model     = D_MODEL
+num_layers  = NUM_LAYERS
+num_heads   = NUM_HEADS
+d_ff        = D_FF
+dropout     = DROPOUT
+output_size = OUTPUT_SIZE
 
 if torch.backends.mps.is_available():
     device = torch.device("mps")
@@ -42,8 +43,8 @@ model = TransformerDecoder2D(
     action_size=action_size,            
     seq_len=seq_len,
     output_size=output_size,
-    max_distance=8,
-    use_causal_mask=False   
+    max_distance=MAX_DISTANCE,
+    use_causal_mask=False
 ).to(device)
 
 _dir = os.path.dirname(os.path.abspath(__file__))
